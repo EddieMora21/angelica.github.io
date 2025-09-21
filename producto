@@ -1,0 +1,1047 @@
+{% comment %} productview-section3.liquid - Improved responsive tabs/slider
+section with video support {% endcomment %}
+
+{{ "productview-section3.css" | asset_url | stylesheet_tag }}
+{% render 'floating-product-button' %}
+<div class="menoplay-section" id="menoplay-section">
+  <div class="menoplay-container">
+    <div class="menoplay-header">
+      <div class="menoplay-subtitle">{{ section.settings.subtitle }}</div>
+      <h1 class="menoplay-title">{{ section.settings.title }}</h1>
+    </div>
+
+    <div class="menoplay-slider-container">
+      <!-- Flecha izquierda para navegación -->
+      <button
+        class="menoplay-arrow arrow-left"
+        onclick="prevTab()"
+        aria-label="Previous tab"
+      >
+        <svg
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M15 18L9 12L15 6"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+        </svg>
+      </button>
+
+      <div class="menoplay-tabs-wrapper">
+        <div class="menoplay-tabs" id="menoplay-tabs">
+          {% for block in section.blocks %} {% if block.type == 'tab' %}
+          <button
+            class="menoplay-tab"
+            id="tab-{{ forloop.index0 }}"
+            onclick="showTab({{ forloop.index0 }})"
+            aria-controls="content-{{ forloop.index0 }}"
+          >
+            {{ block.settings.tab_title }}
+          </button>
+          {% endif %} {% endfor %}
+        </div>
+      </div>
+
+      <!-- Flecha derecha para navegación -->
+      <button
+        class="menoplay-arrow arrow-right"
+        onclick="nextTab()"
+        aria-label="Next tab"
+      >
+        <svg
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M9 18L15 12L9 6"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+        </svg>
+      </button>
+    </div>
+
+    <div class="menoplay-content">
+      {% for block in section.blocks %} {% if block.type == 'tab' %}
+      <div
+        class="menoplay-tab-content {% if block.settings.show_stats %}fullwidth{% endif %}"
+        id="content-{{ forloop.index0 }}"
+        role="tabpanel"
+        aria-labelledby="tab-{{ forloop.index0 }}"
+      >
+        <div class="menoplay-info">
+          <h2 class="menoplay-info-title">{{ block.settings.info_title }}</h2>
+
+          <div class="menoplay-quote">
+            {{ block.settings.tab_content }}
+
+            {% if block.settings.signature != blank and block.settings.signature
+            != "none" %}
+            <p class="menoplay-signature">{{ block.settings.signature }}</p>
+            {% endif %} {% if block.settings.show_stats %}
+            <div class="menoplay-stats">
+              <!-- Primera sección de estadísticas -->
+              {% if block.settings.show_intro_text %}
+              <p class="menoplay-intro">{{ block.settings.intro_text }}</p>
+              {% endif %} {% if block.settings.show_timeframe %}
+              <p class="menoplay-timeframe">
+                {{ block.settings.timeframe_text }}
+              </p>
+              {% endif %}
+
+              <!-- Grid de estadísticas principales -->
+              <div class="stats-grid">
+                <!-- Estadística 1 -->
+                <div class="stat-item">
+                  <div class="stat-circle circle-purple">
+                    {{ block.settings.stat1_percentage }}%
+                  </div>
+                  <div class="stat-text">
+                    {{ block.settings.stat1_text }}
+                  </div>
+                </div>
+
+                <!-- Estadística 2 -->
+                <div class="stat-item">
+                  <div class="stat-circle circle-teal">
+                    {{ block.settings.stat2_percentage }}%
+                  </div>
+                  <div class="stat-text">
+                    {{ block.settings.stat2_text }}
+                  </div>
+                </div>
+
+                <!-- Estadística 3 -->
+                <div class="stat-item">
+                  <div class="stat-circle circle-blue">
+                    {{ block.settings.stat3_percentage }}%
+                  </div>
+                  <div class="stat-text">
+                    {{ block.settings.stat3_text }}
+                  </div>
+                </div>
+
+                <!-- Estadística 4 -->
+                <div class="stat-item">
+                  <div class="stat-circle circle-green">
+                    {{ block.settings.stat4_percentage }}%
+                  </div>
+                  <div class="stat-text">
+                    {{ block.settings.stat4_text }}
+                  </div>
+                </div>
+              </div>
+
+              {% if block.settings.show_additional_text %}
+              <p class="menoplay-additional-text">
+                {{ block.settings.additional_text }}
+              </p>
+              {% endif %}
+
+              <!-- Grid de síntomas -->
+              {% if block.settings.show_symptoms_grid %}
+              <div class="symptoms-grid">
+                <!-- Síntoma 1 -->
+                <div class="symptom-item">
+                  <div class="symptom-icon">
+                    {% if block.settings.symptom1_icon != blank %}
+                    <img
+                      src="{{
+                        block.settings.symptom1_icon | img_url : 'master'
+                      }}"
+                      alt="{{ block.settings.symptom1_text }}"
+                      loading="lazy"
+                    />
+                    {% else %}
+                    <img
+                      src="{{ 'icon-symptom1.png' | asset_url }}"
+                      alt="{{ block.settings.symptom1_text }}"
+                      loading="lazy"
+                    />
+                    {% endif %}
+                  </div>
+                  <div class="symptom-name">
+                    {{ block.settings.symptom1_text }}
+                  </div>
+                </div>
+
+                <!-- Síntoma 2 -->
+                <div class="symptom-item">
+                  <div class="symptom-icon">
+                    {% if block.settings.symptom2_icon != blank %}
+                    <img
+                      src="{{
+                        block.settings.symptom2_icon | img_url : 'master'
+                      }}"
+                      alt="{{ block.settings.symptom2_text }}"
+                      loading="lazy"
+                    />
+                    {% else %}
+                    <img
+                      src="{{ 'icon-symptom2.png' | asset_url }}"
+                      alt="{{ block.settings.symptom2_text }}"
+                      loading="lazy"
+                    />
+                    {% endif %}
+                  </div>
+                  <div class="symptom-name">
+                    {{ block.settings.symptom2_text }}
+                  </div>
+                </div>
+
+                <!-- Síntoma 3 -->
+                <div class="symptom-item">
+                  <div class="symptom-icon">
+                    {% if block.settings.symptom3_icon != blank %}
+                    <img
+                      src="{{
+                        block.settings.symptom3_icon | img_url : 'master'
+                      }}"
+                      alt="{{ block.settings.symptom3_text }}"
+                      loading="lazy"
+                    />
+                    {% else %}
+                    <img
+                      src="{{ 'icon-symptom3.png' | asset_url }}"
+                      alt="{{ block.settings.symptom3_text }}"
+                      loading="lazy"
+                    />
+                    {% endif %}
+                  </div>
+                  <div class="symptom-name">
+                    {{ block.settings.symptom3_text }}
+                  </div>
+                </div>
+
+                <!-- Síntoma 4 -->
+                <div class="symptom-item">
+                  <div class="symptom-icon">
+                    {% if block.settings.symptom4_icon != blank %}
+                    <img
+                      src="{{
+                        block.settings.symptom4_icon | img_url : 'master'
+                      }}"
+                      alt="{{ block.settings.symptom4_text }}"
+                      loading="lazy"
+                    />
+                    {% else %}
+                    <img
+                      src="{{ 'icon-symptom4.png' | asset_url }}"
+                      alt="{{ block.settings.symptom4_text }}"
+                      loading="lazy"
+                    />
+                    {% endif %}
+                  </div>
+                  <div class="symptom-name">
+                    {{ block.settings.symptom4_text }}
+                  </div>
+                </div>
+
+                <!-- Síntoma 5 -->
+                <div class="symptom-item">
+                  <div class="symptom-icon">
+                    {% if block.settings.symptom5_icon != blank %}
+                    <img
+                      src="{{
+                        block.settings.symptom5_icon | img_url : 'master'
+                      }}"
+                      alt="{{ block.settings.symptom5_text }}"
+                      loading="lazy"
+                    />
+                    {% else %}
+                    <img
+                      src="{{ 'icon-symptom5.png' | asset_url }}"
+                      alt="{{ block.settings.symptom5_text }}"
+                      loading="lazy"
+                    />
+                    {% endif %}
+                  </div>
+                  <div class="symptom-name">
+                    {{ block.settings.symptom5_text }}
+                  </div>
+                </div>
+              </div>
+              {% endif %} {% if block.settings.show_divider %}
+              <div class="menoplay-divider"></div>
+              {% endif %}
+            </div>
+            {% endif %}
+
+            <!-- Disclaimer colocado al final de todo el contenido de la pestaña -->
+            {% if block.settings.show_disclaimer %}
+            <div class="menoplay-disclaimer">
+              {{ block.settings.disclaimer_text }}
+            </div>
+            {% endif %}
+          </div>
+        </div>
+
+        <!-- Mostrar la imagen o video dentro del content para mejor alineación -->
+        {% if block.settings.show_stats != true %}
+        <div class="menoplay-media-container">
+          {% if block.settings.media_type == 'video' and
+          block.settings.tab_video_url != blank %}
+          <div class="menoplay-video-wrapper">
+            {% if block.settings.video_provider == 'youtube' %}
+            <iframe
+              src="https://www.youtube.com/embed/{{
+                block.settings.tab_video_url
+                  | split : 'v='
+                  | last
+                  | split : '&'
+                  | first
+              }}"
+              class="menoplay-video"
+              frameborder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowfullscreen
+              loading="lazy"
+              title="{{ block.settings.info_title | escape }}"
+            ></iframe>
+            {% elsif block.settings.video_provider == 'vimeo' %}
+            <iframe
+              src="https://player.vimeo.com/video/{{
+                block.settings.tab_video_url | split : '/' | last
+              }}"
+              class="menoplay-video"
+              frameborder="0"
+              allow="autoplay; fullscreen; picture-in-picture"
+              allowfullscreen
+              loading="lazy"
+              title="{{ block.settings.info_title | escape }}"
+            ></iframe>
+            {% elsif block.settings.video_provider == 'mp4' and
+            block.settings.tab_mp4_video != blank %}
+            <video
+              class="menoplay-video"
+              controls
+              {%
+              if
+              block.settings.autoplay
+              %}autoplay
+              muted{%
+              endif
+              %}
+              {%
+              if
+              block.settings.loop
+              %}loop{%
+              endif
+              %}
+            >
+              <source
+                src="{{ block.settings.tab_mp4_video }}"
+                type="video/mp4"
+              />
+              Your browser does not support the video tag.
+            </video>
+            {% endif %}
+          </div>
+          {% elsif block.settings.tab_image %}
+          <img
+            src="{{ block.settings.tab_image | img_url : 'master' }}"
+            alt="{{ block.settings.image_alt | escape }}"
+            class="menoplay-tab-image"
+            loading="lazy"
+          />
+          {% endif %}
+        </div>
+        {% endif %}
+      </div>
+      {% endif %} {% endfor %}
+    </div>
+  </div>
+</div>
+
+<style>
+  /* Base container styles */
+  .menoplay-section {
+    padding: 40px 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .menoplay-container {
+    width: 100%;
+  }
+
+  .menoplay-header {
+    text-align: center;
+    margin-bottom: 30px;
+  }
+
+  .menoplay-subtitle {
+    font-size: 18px;
+    color: #a57fb2;
+    font-weight: 500;
+    margin-bottom: 5px;
+  }
+
+  .menoplay-title {
+    font-size: 36px;
+    font-weight: 700;
+    color: #333;
+    margin: 0;
+  }
+
+  /* Slider/carousel styles */
+  .menoplay-slider-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 30px;
+    position: relative;
+    width: 100%;
+  }
+
+  .menoplay-tabs-wrapper {
+    max-width: calc(100% - 100px);
+    overflow: hidden;
+    margin: 0 10px;
+  }
+
+  .menoplay-tabs {
+    display: flex;
+    transition: transform 0.3s ease;
+    justify-content: flex-start;
+    flex-wrap: nowrap;
+    gap: 10px;
+  }
+
+  .menoplay-tab {
+    white-space: nowrap;
+    min-width: max-content;
+    padding: 12px 25px;
+    border-radius: 30px;
+    border: 2px solid #a57fb2;
+    background-color: transparent;
+    color: #a57fb2;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin: 0;
+    flex-shrink: 0;
+    font-size: 16px;
+  }
+
+  .menoplay-tab.active {
+    background-color: #a57fb2;
+    color: white;
+  }
+
+  .menoplay-arrow {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background-color: #f5f5f5;
+    color: #a57fb2;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    z-index: 2;
+    flex-shrink: 0;
+  }
+
+  .menoplay-arrow:hover {
+    background-color: #eaeaea;
+  }
+
+  /* Content styles */
+  .menoplay-content {
+    margin-top: 20px;
+  }
+
+  .menoplay-tab-content {
+    display: none;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .menoplay-tab-content.active {
+    display: flex;
+    opacity: 1;
+    animation: fadeIn 0.5s ease;
+    flex-wrap: wrap;
+  }
+
+  .menoplay-tab-content:not(.fullwidth) {
+    display: none;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 30px;
+  }
+
+  .menoplay-tab-content:not(.fullwidth).active {
+    display: flex;
+  }
+
+  .menoplay-tab-content:not(.fullwidth) .menoplay-info {
+    flex: 1;
+    min-width: 300px;
+  }
+
+  .menoplay-tab-content:not(.fullwidth) .menoplay-media-container {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-width: 300px;
+  }
+
+  .menoplay-tab-content.fullwidth .menoplay-info {
+    width: 100%;
+  }
+
+  .menoplay-info-title {
+    font-size: 24px;
+    font-weight: 600;
+    color: #a57fb2;
+    margin-bottom: 20px;
+  }
+
+  .menoplay-quote {
+    font-size: 16px;
+    line-height: 1.6;
+    color: #555;
+  }
+
+  .menoplay-signature {
+    font-style: italic;
+    margin-top: 15px;
+    color: #777;
+  }
+
+  .menoplay-tab-image {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  }
+
+  /* Video styles */
+  .menoplay-video-wrapper {
+    position: relative;
+    width: 100%;
+    height: 0;
+    padding-bottom: 56.25%; /* 16:9 aspect ratio */
+    overflow: hidden;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  }
+
+  .menoplay-video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 8px;
+  }
+
+  /* Statistics styles */
+  .menoplay-stats {
+    margin-top: 30px;
+    margin-left: 80px;
+  }
+
+  .menoplay-intro {
+    font-size: 18px;
+    color: #333;
+    margin-bottom: 15px;
+  }
+
+  .menoplay-timeframe {
+    font-size: 20px;
+    font-weight: 500;
+    display: inline-block;
+    margin: 15px 0;
+    color: #333;
+  }
+
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    margin: 25px 0;
+  }
+
+  .stat-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+  }
+
+  .stat-circle {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    font-weight: 700;
+    color: white;
+    flex-shrink: 0;
+  }
+
+  .circle-purple {
+    background-color: #734999;
+  }
+
+  .circle-teal {
+    background-color: #00a79d;
+  }
+
+  .circle-blue {
+    background-color: #0072bc;
+  }
+
+  .circle-green {
+    background-color: #39b54a;
+  }
+
+  .stat-text {
+    font-size: 16px;
+    line-height: 1.4;
+  }
+
+  .menoplay-additional-text {
+    font-size: 18px;
+    margin: 25px 0 15px;
+  }
+
+  /* Symptoms grid */
+  .symptoms-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 15px;
+    margin: 20px 0;
+  }
+
+  .symptom-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .symptom-icon {
+    width: 60px;
+    height: 60px;
+    margin-bottom: 10px;
+  }
+
+  .symptom-icon img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+
+  .symptom-name {
+    font-size: 14px;
+    line-height: 1.3;
+  }
+
+  .menoplay-divider {
+    height: 1px;
+    background-color: #ddd;
+    margin: 30px 0;
+  }
+
+  .menoplay-disclaimer {
+    font-size: 14px;
+    color: #777;
+    font-style: italic;
+    margin-top: 20px;
+  }
+
+  /* Animations */
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  /* Responsive styles */
+  @media (max-width: 1024px) {
+    .stats-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .symptoms-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  @media (max-width: 768px) {
+    .menoplay-title {
+      font-size: 30px;
+    }
+
+    .menoplay-tabs-wrapper {
+      max-width: calc(100% - 90px);
+    }
+
+    .menoplay-tab {
+      padding: 10px 20px;
+      font-size: 14px;
+    }
+
+    .menoplay-tab-content:not(.fullwidth) {
+      flex-direction: column;
+    }
+
+    .menoplay-tab-content:not(.fullwidth) .menoplay-info,
+    .menoplay-tab-content:not(.fullwidth) .menoplay-media-container {
+      width: 100%;
+    }
+
+    .symptoms-grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .menoplay-section {
+      padding: 30px 15px;
+    }
+
+    .menoplay-title {
+      font-size: 24px;
+    }
+
+    .menoplay-subtitle {
+      font-size: 16px;
+    }
+
+    .menoplay-tabs-wrapper {
+      max-width: calc(100% - 80px);
+    }
+
+    .menoplay-tab {
+      padding: 8px 15px;
+      font-size: 13px;
+      min-width: auto;
+    }
+
+    .menoplay-arrow {
+      width: 35px;
+      height: 35px;
+    }
+
+    .stats-grid {
+      grid-template-columns: 1fr;
+      gap: 15px;
+    }
+
+    .stat-circle {
+      width: 70px;
+      height: 70px;
+      font-size: 18px;
+    }
+
+    .menoplay-timeframe {
+      font-size: 18px;
+    }
+
+    .menoplay-info-title {
+      font-size: 20px;
+    }
+  }
+</style>
+<script>
+  // Variables para controlar el slider
+  let currentTabIndex = 0;
+  let tabsCount = 0;
+  let tabsData = [];
+  let tabsScrollPosition = 0;
+  let isMobile = window.innerWidth <= 768;
+
+  // Función para mostrar una pestaña específica
+  function showTab(index) {
+    // Ocultar todos los contenidos y desactivar todas las pestañas
+    const tabs = document.querySelectorAll('.menoplay-tab');
+    const contents = document.querySelectorAll('.menoplay-tab-content');
+
+    // Validar el índice
+    if (index < 0) index = 0;
+    if (index >= tabs.length) index = tabs.length - 1;
+
+    // Desactivar todas las pestañas y contenidos
+    tabs.forEach(tab => tab.classList.remove('active'));
+    contents.forEach(content => content.classList.remove('active'));
+
+    // Activar la pestaña seleccionada
+    const selectedTab = document.getElementById('tab-' + index);
+    if (selectedTab) {
+      selectedTab.classList.add('active');
+
+      // Centrar la pestaña en el viewport
+      centerSelectedTab(selectedTab, index);
+    }
+
+    // Activar el contenido correspondiente
+    const selectedContent = document.getElementById('content-' + index);
+    if (selectedContent) {
+      selectedContent.classList.add('active');
+    }
+
+    // Actualizar índice actual
+    currentTabIndex = index;
+  }
+
+  // Función para centrar la pestaña seleccionada
+  function centerSelectedTab(tab, index) {
+    const tabsContainer = document.querySelector('.menoplay-tabs');
+    const tabsWrapper = document.querySelector('.menoplay-tabs-wrapper');
+
+    if (!tabsContainer || !tabsWrapper) return;
+
+    const tabWidth = tab.offsetWidth;
+    const containerWidth = tabsWrapper.offsetWidth;
+
+    // Calcular posición central
+    let scrollPosition;
+
+    if (isMobile) {
+      // En móvil, mostrar una pestaña a la vez
+      scrollPosition = tab.offsetLeft;
+    } else {
+      // En escritorio, centrar la pestaña
+      scrollPosition = tab.offsetLeft - (containerWidth / 2) + (tabWidth / 2);
+    }
+
+    // Limitar el scroll a los límites del contenedor
+    const maxScroll = tabsContainer.scrollWidth - containerWidth;
+    scrollPosition = Math.max(0, Math.min(scrollPosition, maxScroll));
+
+    // Aplicar la transformación con animación
+    tabsContainer.style.transform = `translateX(-${scrollPosition}px)`;
+    tabsScrollPosition = scrollPosition;
+  }
+
+  // Función para ir a la pestaña anterior
+  function prevTab() {
+    let newIndex = currentTabIndex - 1;
+    if (newIndex < 0) {
+      newIndex = tabsCount - 1; // Ir al último si estamos en el primero
+    }
+    showTab(newIndex);
+  }
+
+  // Función para ir a la pestaña siguiente
+  function nextTab() {
+    let newIndex = currentTabIndex + 1;
+    if (newIndex >= tabsCount) {
+      newIndex = 0; // Volver al primero si estamos en el último
+    }
+    showTab(newIndex);
+  }
+
+  // Ajustar tabs al cambiar el tamaño de la ventana
+  function handleResize() {
+    isMobile = window.innerWidth <= 768;
+
+    // Volver a calcular la posición de la pestaña actual
+    const currentTab = document.getElementById('tab-' + currentTabIndex);
+    if (currentTab) {
+      centerSelectedTab(currentTab, currentTabIndex);
+    }
+  }
+
+  // Pausar todos los videos al cambiar de pestaña
+  function pauseAllVideos() {
+    // Pausar videos HTML5
+    const videos = document.querySelectorAll('.menoplay-video');
+    videos.forEach(video => {
+      if (video.tagName === 'VIDEO' && !video.paused) {
+        video.pause();
+      }
+    });
+
+    // Para videos de YouTube y Vimeo necesitamos usar postMessage
+    const iframes = document.querySelectorAll('.menoplay-video[src*="youtube"], .menoplay-video[src*="vimeo"]');
+    iframes.forEach(iframe => {
+      // YouTube
+      if (iframe.src.includes('youtube')) {
+        iframe.contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*');
+      }
+      // Vimeo
+      else if (iframe.src.includes('vimeo')) {
+        iframe.contentWindow.postMessage('{"method":"pause"}', '*');
+      }
+    });
+  }
+
+  // Inicializar el carrusel cuando la página carga
+  document.addEventListener('DOMContentLoaded', function() {
+    // Preparar datos de bloques para JavaScript
+    const tabs = document.querySelectorAll('.menoplay-tab');
+    tabsCount = tabs.length;
+    tabsData = [];
+
+    {% for block in section.blocks %}
+      {% if block.type == 'tab' %}
+        tabsData.push({
+          index: {{ forloop.index0 }},
+          show_stats: {% if block.settings.show_stats %}true{% else %}false{% endif %},
+          media_type: '{{ block.settings.media_type }}'
+        });
+      {% endif %}
+    {% endfor %}
+
+    // Añadir eventos de teclado para navegación accesible
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'ArrowLeft') {
+        prevTab();
+      } else if (e.key === 'ArrowRight') {
+        nextTab();
+      }
+    });
+
+    // Evento para manejar cambios de tamaño
+    window.addEventListener('resize', handleResize);
+
+    // Detectar si es móvil
+    isMobile = window.innerWidth <= 768;
+
+    // Activar la primera pestaña por defecto
+    showTab(0);
+
+    // Añadir evento para pausar videos al cambiar pestañas
+    tabs.forEach(tab => {
+      tab.addEventListener('click', function() {
+        pauseAllVideos();
+      });
+    });
+
+    // Añadir evento para los botones de navegación
+    document.querySelector('.arrow-left').addEventListener('click', pauseAllVideos);
+    document.querySelector('.arrow-right').addEventListener('click', pauseAllVideos);
+  });
+
+  // Soporte para gestos táctiles (swipe)
+  let touchStartX = 0;
+  let touchEndX = 0;
+
+  const content = document.querySelector('.menoplay-content');
+  if (content) {
+    content.addEventListener('touchstart', e => {
+      touchStartX = e.changedTouches[0].screenX;
+    }, { passive: true });
+
+    content.addEventListener('touchend', e => {
+      touchEndX = e.changedTouches[0].screenX;
+      handleSwipe();
+    }, { passive: true });
+  }
+
+  function handleSwipe() {
+    const swipeThreshold = 50;
+    if (touchEndX < touchStartX - swipeThreshold) {
+      pauseAllVideos();
+      nextTab(); // Deslizar a la izquierda = siguiente
+    }
+    if (touchEndX > touchStartX + swipeThreshold) {
+      pauseAllVideos();
+      prevTab(); // Deslizar a la derecha = anterior
+    }
+  }
+</script>
+{% schema %} { "name": "Product View Section 3", "settings": [ { "type": "text",
+"id": "subtitle", "label": "Subtitle", "default": "HOW DOES" }, { "type":
+"text", "id": "title", "label": "Title", "default": "Menoplay works?" } ],
+"blocks": [ { "type": "tab", "name": "Tab", "settings": [ { "type": "text",
+"id": "tab_title", "label": "Tab Title", "default": "Tab" }, { "type": "text",
+"id": "info_title", "label": "Tab Information Title", "default": "Science You
+Can Trust" }, { "type": "richtext", "id": "tab_content", "label": "Tab Content",
+"default": "
+<p>Description text for this tab content.</p>
+" }, { "type": "text", "id": "signature", "label": "Signature (if needed)",
+"default": "Signature" }, { "type": "header", "content": "Layout Options" }, {
+"type": "checkbox", "id": "show_stats", "label": "Show Statistics Grid (Full
+Width)", "info": "When enabled, grid takes full width and media (image/video) is
+hidden", "default": false }, { "type": "header", "content": "Media Settings" },
+{ "type": "select", "id": "media_type", "label": "Media Type", "options": [ {
+"value": "image", "label": "Image" }, { "value": "video", "label": "Video" } ],
+"default": "image" }, { "type": "image_picker", "id": "tab_image", "label": "Tab
+Image", "info": "Used when Media Type is set to Image" }, { "type": "text",
+"id": "image_alt", "label": "Image Alt Text", "default": "Product image" }, {
+"type": "select", "id": "video_provider", "label": "Video Provider", "options":
+[ { "value": "youtube", "label": "YouTube" }, { "value": "vimeo", "label":
+"Vimeo" }, { "value": "mp4", "label": "MP4 (Self-hosted)" } ], "default":
+"youtube", "info": "Select the provider of your video" }, { "type": "text",
+"id": "tab_video_url", "label": "Video URL", "info": "YouTube or Vimeo URL",
+"default": "https://www.youtube.com/watch?v=example" }, { "type": "url", "id":
+"tab_mp4_video", "label": "MP4 Video File", "info": "Upload an MP4 file if you
+selected MP4 as the provider" }, { "type": "checkbox", "id": "autoplay",
+"label": "Autoplay video (muted)", "default": false, "info": "Autoplay only
+works when muted due to browser restrictions" }, { "type": "checkbox", "id":
+"loop", "label": "Loop video", "default": false }, { "type": "header",
+"content": "Statistics Settings" }, { "type": "checkbox", "id":
+"show_intro_text", "label": "Show Introduction Text", "default": true }, {
+"type": "text", "id": "intro_text", "label": "Introduction Text", "default":
+"MenoPlay works because it's backed by science." }, { "type": "checkbox", "id":
+"show_timeframe", "label": "Show Timeframe Text", "default": true }, { "type":
+"text", "id": "timeframe_text", "label": "Timeframe Text", "default": "Within 3
+months* helps reduce" }, { "type": "header", "content": "Statistics Grid" }, {
+"type": "range", "id": "stat1_percentage", "min": 0, "max": 100, "step": 1,
+"default": 70, "label": "Statistic 1 Percentage" }, { "type": "text", "id":
+"stat1_text", "label": "Statistic 1 Description", "default": "Sleep issues. Wake
+up rested, not exhausted." }, { "type": "range", "id": "stat2_percentage",
+"min": 0, "max": 100, "step": 1, "default": 86, "label": "Statistic 2
+Percentage" }, { "type": "text", "id": "stat2_text", "label": "Statistic 2
+Description", "default": "Joint & muscle pain. Move with ease." }, { "type":
+"range", "id": "stat3_percentage", "min": 0, "max": 100, "step": 1, "default":
+80, "label": "Statistic 3 Percentage" }, { "type": "text", "id": "stat3_text",
+"label": "Statistic 3 Description", "default": "Hot flashes & night sweats. Stay
+cool, sleep better." }, { "type": "range", "id": "stat4_percentage", "min": 0,
+"max": 100, "step": 1, "default": 73, "label": "Statistic 4 Percentage" }, {
+"type": "text", "id": "stat4_text", "label": "Statistic 4 Description",
+"default": "Mood changes. Goodbye irritability, hello balance." }, { "type":
+"header", "content": "Additional Symptoms" }, { "type": "checkbox", "id":
+"show_additional_text", "label": "Show Additional Text", "default": true }, {
+"type": "text", "id": "additional_text", "label": "Additional Text", "default":
+"MenoPlay also helps improve other major symptoms like:" }, { "type":
+"checkbox", "id": "show_symptoms_grid", "label": "Show Symptoms Grid",
+"default": true }, { "type": "image_picker", "id": "symptom1_icon", "label":
+"Symptom 1 Icon" }, { "type": "text", "id": "symptom1_text", "label": "Symptom 1
+Text", "default": "Intimate Health Issues" }, { "type": "image_picker", "id":
+"symptom2_icon", "label": "Symptom 2 Icon" }, { "type": "text", "id":
+"symptom2_text", "label": "Symptom 2 Text", "default": "Fatigue" }, { "type":
+"image_picker", "id": "symptom3_icon", "label": "Symptom 3 Icon" }, { "type":
+"text", "id": "symptom3_text", "label": "Symptom 3 Text", "default": "Bladder
+Problems" }, { "type": "image_picker", "id": "symptom4_icon", "label": "Symptom
+4 Icon" }, { "type": "text", "id": "symptom4_text", "label": "Symptom 4 Text",
+"default": "Irritability" }, { "type": "image_picker", "id": "symptom5_icon",
+"label": "Symptom 5 Icon" }, { "type": "text", "id": "symptom5_text", "label":
+"Symptom 5 Text", "default": "Brain Fog" }, { "type": "checkbox", "id":
+"show_divider", "label": "Show Divider after Statistics", "default": true }, {
+"type": "checkbox", "id": "show_disclaimer", "label": "Mostrar Disclaimer",
+"default": false }, { "type": "richtext", "id": "disclaimer_text", "label":
+"Texto del Disclaimer", "default": "
+<p>*Resultados pueden variar. Consulte a su médico antes de usar.</p>
+" } ] } ], "presets": [ { "name": "Product View Section 3", "category": "Custom
+Content" } ] } {% endschema %}
